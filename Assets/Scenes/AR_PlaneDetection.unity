@@ -236,7 +236,7 @@ MonoBehaviour:
   objectToPlace: {fileID: 4175547031355707917, guid: cb51ade01d1684822b2191544c40c0c5,
     type: 3}
   placementIndicator: {fileID: 1114491065}
-  size: 0.3
+  size: 0.2
 --- !u!4 &400508621
 Transform:
   m_ObjectHideFlags: 0
