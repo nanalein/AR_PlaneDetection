@@ -7,68 +7,69 @@ using System;
 
 public class ARTapToPlaceObject : MonoBehaviour
 {
-    public GameObject objectToPlace; // puclic GameObject legt fest welche GameObject gespawned werden soll
-    public GameObject placementIndicator; // public GameObject welches in der Szene up-gedated wird (Position)
-    private ARSessionOrigin arOrigin; // private Reference um mit dem ARSessionOrigin zu interagieren
-    private Pose placementPose; // eine Pose Variable beschreibt die Position und Rotation eines 3D Punkts im Raum
-    private bool placementPoseIsValid = false; // checkt ob Ergebniss aus arOrigin.Raycast eine Plane sieht oder keine
-    public float hoehe = 0.1f;
-    public float breite = 0.1f;
-    public float tiefe = 0.1f;
+    public GameObject objectToPlace;
+    public GameObject placementIndicator;
+    private ARSessionOrigin arOrigin;
+    private Pose placementPose;
+    private bool placementPoseIsValid = false;
+    public float size = 0.3f;
+   
+
+
+
+    private void Start()
+    {
+        arOrigin = FindObjectOfType<ARSessionOrigin>();
+    }
     
-
-    // Start is called before the first frame update
-    void Start()
+    
+    private void Update()
     {
-        arOrigin = FindObjectOfType<ARSessionOrigin>(); // sobald Start wird eine Ref davon in arOrigin gespeichert
-        objectToPlace.transform.localScale = new Vector3(breite, hoehe, tiefe);
-    }
+        UpdatePlacementPose();
+        UpdatePlacementIndicator();
 
-    // Update is called once per frame
-    void Update()
-    {
-        UpdatePlacementPose(); // prüft jeden Frame wohin die Camera zeigt und ob ein Objekt dort platziert werden kann
-        UpdatePlacementIndicator(); // wird genutzt um die Visuals up-zu-daten
-
-        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) // prüft ob placementPoseIsValid && hat der User einen Finger auf dem Screen && checken ob die Touch-Phase dieses Fingers gerade begonnen hat
+        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
-            PlaceObject(); //wenn alle Bedingungen true dann platziere ein neues Objekt
+            PlaceObject();
         }
+        
+       
     }
 
+    
     private void PlaceObject()
     {
-        GameObject newObject = Instantiate(objectToPlace, placementPose.position, placementPose.rotation) as GameObject;
-        newObject.transform.localScale = new Vector3(breite, hoehe, tiefe);
+        GameObject newObject = Instantiate(objectToPlace, placementPose.position, placementPose.rotation);
+        newObject.transform.localScale = new Vector3(size, size, size);
     }
 
     private void UpdatePlacementIndicator()
     {
         if (placementPoseIsValid)
         {
-            placementIndicator.SetActive(true); // wenn placementPoseIsValid setzte das GameObject auf visible und...
-            placementIndicator.transform.SetPositionAndRotation(placementPose.position, placementPose.rotation); // ...setze das GameObject an die Position mit Rotation von placementPose
+            placementIndicator.SetActive(true);
+            placementIndicator.transform.SetPositionAndRotation(placementPose.position, placementPose.rotation);
         }
         else
         {
-            placementIndicator.SetActive(false); //wenn placementPoseIsValid nicht valid setzte das GameObject auf invisible
+            placementIndicator.SetActive(false);
         }
     }
 
     private void UpdatePlacementPose()
     {
-        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f)); // bestimmt Mitte vom iPhone Screen
-        var hits = new List<ARRaycastHit>(); // speichert alle Hit-Points vom Rayctrace
-        arOrigin.Raycast(screenCenter, hits, TrackableType.Planes); // Raycast von mitte Screen, speichert in hits und tracked alle verfügbaren Planes
+        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+        var hits = new List<ARRaycastHit>();
+        arOrigin.Raycast(screenCenter, hits, TrackableType.Planes);
     
-        placementPoseIsValid = hits.Count > 0; // setzt die bool auf true wenn mind. 1 plane getroffen wurde
-        if (placementPoseIsValid)         // wenn placementPoseIsValid...
+        placementPoseIsValid = hits.Count > 0;
+        if (placementPoseIsValid)
         {
-            placementPose = hits[0].pose; // ...dann nimm die erste Hit-Result aus dem Array und lese die Pose-Werte aus
+            placementPose = hits[0].pose;
 
-            var cameraForward = Camera.current.transform.forward; // ist ein Vector(x,y,z) der die Richtung erkennt wohin die Camera blickt (wie ein Pfeil)
-            var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized; // nimmt nur die x- und z-werte aus cameraForward (y-interessiert nicht weil eh auf Boden) und normalisiert die Werte noch
-            placementPose.rotation = Quaternion.LookRotation(cameraBearing); // nimmt Rotation aus cameraBearing und setzt diese in placementPose.totation
+            var cameraForward = Camera.current.transform.forward;
+            var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+            placementPose.rotation = Quaternion.LookRotation(cameraBearing);
         }
     }
 }
