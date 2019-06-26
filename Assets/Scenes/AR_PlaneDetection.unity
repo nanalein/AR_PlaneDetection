@@ -233,10 +233,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bdb09443442842f7a41871b128f186e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToPlace: {fileID: 967571461155057125, guid: 73f506144f628477ba8ae855d6f75ee0,
+  objectToPlace: {fileID: 5073665564352147071, guid: 274c76140dfe34e9d91454857af31334,
     type: 3}
   placementIndicator: {fileID: 1114491065}
-  size: 0.2
+  size: 0.5
 --- !u!4 &400508621
 Transform:
   m_ObjectHideFlags: 0

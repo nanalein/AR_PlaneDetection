@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/AR_PlaneDetection.unity
     guid: 18574545dc97a4be2895026157550ed2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Statue_ARImageAnchor.unity
     guid: befc06ba4fe0046439ef5dac5a33c0e7
   m_configObjects: {}
